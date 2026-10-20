@@ -282,6 +282,55 @@
   .fb:empty { display: none; }
   .fb.bad { color: var(--flag); }
 
+
+  /* Compact sizing so each screen fits the Canvas frame */
+  body { font-size: 16px; line-height: 1.5; padding: 14px 14px; }
+  h1 { font-size: 28px; padding-bottom: 6px; }
+  h2 { font-size: 19px; margin-bottom: 8px; }
+  p { margin-bottom: 10px; }
+  .sub { margin: 2px 0 14px; font-size: 14px; }
+  .bench-top .sub { margin-bottom: 14px; }
+  .panel { padding: 16px 20px; margin-bottom: 12px; border-radius: 14px; }
+  .question { padding: 12px 16px; font-size: 17px; margin: 4px 0 10px; }
+  .threshold { padding: 10px 14px; margin: 8px 0 10px; }
+  .users li { margin-bottom: 4px; }
+  .note { margin-top: 6px; font-size: 14px; }
+  button { padding: 10px 20px; }
+  .actions { margin-top: 12px; }
+  .status { margin-bottom: 24px; }
+  .ref-bar { margin-bottom: 12px; font-size: 14px; }
+  .face { padding: 18px 22px 18px; min-height: 0; border-radius: 18px; }
+  .amount { font-size: 30px; margin: 2px 0 8px; }
+  .prompt { padding-top: 10px; }
+  .factor-label, .call-label { margin-bottom: 6px; }
+  .call-label { margin-top: 12px; }
+  #factorSelect { padding: 8px 12px; }
+  .choices { margin-top: 8px; }
+  .choices button { padding: 11px 20px; }
+  .twist { padding: 10px 14px; margin-bottom: 10px; }
+  .verdict-row { margin-bottom: 8px; }
+  .verdict { font-size: 18px; }
+  #backHeading { margin-bottom: 4px; }
+  .jump { margin-top: 18px; }
+  .jump-label { margin-bottom: 8px; font-size: 15px; }
+  .jump-btn { padding: 10px 14px; }
+  .jump-title { font-size: 15px; }
+  .jump-sub { font-size: 13px; }
+  .review-hint { font-size: 14px; margin-top: 10px; }
+  .picker-wrap { margin: 14px 0 18px; }
+  .picker-label { margin-bottom: 8px; font-size: 15px; }
+  .round-btn { padding: 9px 12px; }
+  .score-big { font-size: 28px; }
+  .bench-table td { padding: 6px 10px; }
+  details.check { padding: 10px 14px; margin-top: 10px; }
+  details.recap { margin-top: 12px; }
+  details.recap > summary {
+    cursor: pointer; font-weight: 600; color: var(--heading);
+    background: var(--card); border-radius: 12px; padding: 12px 16px; list-style-position: inside;
+  }
+  details.recap > summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  details.recap[open] > summary { margin-bottom: 12px; }
+
   @media (max-width: 600px) {
     body { padding: 14px 10px; font-size: 16px; }
     h1 { font-size: 28px; }
@@ -318,10 +367,6 @@
     <h1 id="introHeading" tabindex="-1">Material or Not?</h1>
     <p class="sub">A quick warm-up on materiality using SAB No. 99, codified at ASC 250-10-S99-1</p>
 
-    <div class="panel">
-      <h2>Purpose</h2>
-      <p>Yellow's accounting team found errors during the 20Y8 year-end close, and your job is to decide which ones are material. Each card shows you why, using the SAB No. 99 factors from the lecture.</p>
-    </div>
 
     <div class="panel">
       <h2>Start with a rule of thumb</h2>
@@ -462,7 +507,7 @@
         <p>Say sales and expenses are both overstated by $22,000. Net income comes out exactly right. But if the sales error is material, the statements are still misleading because anyone relying on sales or expenses is looking at incorrect amounts. Correct net income does not fix those errors.</p>
       </details>
     </div>
-    <p class="note" id="benchNote" hidden>The review uses Yellow's $14,000 net income threshold. Each error is its own scenario, so a twist on one card doesn't carry over to the others. To keep the math simple, the cards ignore income taxes unless a card says otherwise. There are three rounds of 10 errors, each with a different set. You can do them in any order, and you can jump straight to a round from the intro screen next time.</p>
+    <p class="note" id="benchNote" hidden>The review uses Yellow's $14,000 threshold. Each error is its own scenario, and the cards ignore income taxes unless a card says otherwise. You can do the rounds in any order and jump straight to a round from the intro next time.</p>
     <div class="picker-wrap" id="benchPicker" hidden>
       <p class="picker-label">Choose a round to start.</p>
       <div class="round-picker"></div>
@@ -574,6 +619,12 @@
       <div class="round-picker"></div>
     </div>
 
+    <div class="panel">
+      <h3>Your calls this round</h3>
+      <ol class="calls" id="callList"></ol>
+    </div>
+    <details class="recap">
+      <summary>Review the key ideas</summary>
     <div class="recap-grid">
       <div class="panel">
         <h3>A small error can still matter when it</h3>
@@ -602,7 +653,7 @@
       </div>
     </div>
 
-    <div class="panel" style="margin-top:16px;">
+    <div class="panel" style="margin-top:12px;">
       <h3>Netting rules</h3>
       <ul>
         <li>Judge each error on its own first. A material error can't be erased by another error.</li>
@@ -613,10 +664,7 @@
       </ul>
     </div>
 
-    <div class="panel" style="margin-top:16px;">
-      <h3>Your calls this round</h3>
-      <ol class="calls" id="callList"></ol>
-    </div>
+    </details>
 
 
     <div class="actions">
