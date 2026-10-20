@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Material or Not?</title>
+<!--
+  Canvas embed (after publishing to GitHub Pages):
+  <iframe src="https://YOUR-USERNAME.github.io/YOUR-REPO/materiality-warmup.html"
+          title="Material or Not? SAB 99 practice activity for Yellow Enterprises" width="100%" height="900"
+          style="border: 1px solid #cbd1d3; border-radius: 8px;" loading="lazy"></iframe>
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #273540;
+    --heading: #2c5159;
+    --teal: #486773;
+    --teal-light: #509caa;
+    --mist: #e3eeeb;
+    --mist-2: #eef5f3;
+    --page: #f1f5f4;
+    --card: #ffffff;
+    --line: #d7e0dd;
+    --muted: #56636b;
+    --good: #1f6b43;
+    --good-bg: #e2f1e8;
+    --miss: #8a5a00;
+    --miss-bg: #fbefd6;
+    --flag: #a12b22;
+    --focus: #0e68b3;
+    --lift: 0 1px 2px rgba(39, 53, 64, .06), 0 12px 32px rgba(44, 81, 89, .12);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--page);
+    color: var(--ink);
+    font-family: "Public Sans", "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    padding: 24px 16px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1, h2, h3 { color: var(--heading); line-height: 1.2; }
+  h1 {
+    font-size: 34px; font-weight: 800; letter-spacing: -0.015em;
+    margin: 0 0 6px; padding-bottom: 8px;
+    border-bottom: 4px double var(--heading);
+    display: inline-block;
+  }
+  h2 { font-size: 21px; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 10px; }
+  h3 { font-size: 18px; font-weight: 600; margin: 0 0 8px; }
+  p { margin: 0 0 12px; }
+  .sub { color: var(--muted); font-size: 15px; margin: 4px 0 22px; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  [hidden] { display: none !important; }
+  b, strong { font-weight: 600; }
+
+  /* Flat sheets for reading content */
+  .panel { background: var(--card); border-radius: 16px; padding: 22px 24px; margin-bottom: 14px; }
+  .threshold {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px;
+    background: var(--mist-2); border-radius: 12px; padding: 12px 16px; margin: 10px 0 14px;
+    font-size: 16px; font-variant-numeric: tabular-nums;
+  }
+  .threshold .eq { font-weight: 800; color: var(--heading); font-size: 20px; border-bottom: 3px double var(--heading); }
+  .question {
+    background: var(--heading); color: #ffffff; border-radius: 14px;
+    padding: 16px 18px; font-size: 18px; font-weight: 600; margin: 4px 0 14px;
+  }
+  .users { margin: 0 0 4px; padding-left: 22px; }
+  .users li { margin-bottom: 6px; }
+  .note { font-size: 15px; color: var(--muted); margin-top: 10px; }
+  details.check { background: var(--mist-2); border-radius: 12px; padding: 12px 16px; margin-top: 12px; }
+  details.check[open] { background: var(--mist); }
+  details.check summary { cursor: pointer; font-weight: 600; color: var(--heading); }
+  details.check summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+  details.check p { margin: 10px 0 0; }
+
+  /* Buttons */
+  button {
+    font: inherit; cursor: pointer; border-radius: 12px; padding: 12px 22px;
+    border: 2px solid var(--heading); background: var(--card); color: var(--heading);
+    font-weight: 600;
+    transition: background-color .15s ease, color .15s ease, transform .1s ease;
+  }
+  button:hover { background: var(--mist); }
+  button:active { transform: translateY(1px); }
+  button:focus-visible, [tabindex="-1"]:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .btn-primary { background: var(--heading); color: #ffffff; border-color: var(--heading); }
+  .btn-primary:hover { background: #22424a; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+  .prev-btn { border-color: var(--line); color: var(--muted); }
+  .review-note { font-size: 14px; color: var(--muted); font-style: italic; margin: 0 0 8px; }
+
+  /* Refresher links under the review */
+  .jump { margin-top: 32px; }
+  .jump-label { font-weight: 600; color: var(--heading); margin: 0 0 10px; }
+  .jump-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .jump-btn {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+    text-align: left; padding: 14px 18px;
+    background: #dfe9e6; color: var(--ink);
+    border: 0; border-radius: 12px;
+  }
+  .jump-btn:hover { background: #c4d8d3; }
+  .jump-title { font-weight: 600; color: var(--heading); font-size: 16px; }
+  .jump-sub { font-weight: 400; color: var(--muted); font-size: 14px; line-height: 1.4; }
+  .review-hint { font-size: 15px; color: var(--muted); margin: 14px 0 0; }
+  .review-hint b { color: var(--heading); }
+
+  /* Status: counter, tickmark track, score */
+  .status {
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 14px;
+    font-size: 15px; color: var(--muted); margin-bottom: 34px;
+  }
+  .ticks { display: flex; flex-wrap: wrap; gap: 5px; list-style: none; margin: 0; padding: 0; flex: 1 1 260px; }
+  .ticks li {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 1.5px solid var(--line); background: var(--card);
+    display: grid; place-items: center;
+    font-size: 13px; font-weight: 800; line-height: 1; color: transparent;
+    transition: transform .12s ease;
+  }
+  .ticks li.right { border-color: var(--good); background: var(--good-bg); color: var(--good); }
+  .ticks li.wrong { border-color: var(--miss); background: var(--miss-bg); color: var(--miss); }
+  .ticks li.current { outline: 2px solid var(--heading); outline-offset: 2px; }
+  .ticks li button {
+    width: 100%; height: 100%; padding: 0; border: 0; border-radius: 50%;
+    background: transparent; color: inherit; font-size: 13px; font-weight: 800; line-height: 1;
+  }
+  .ticks li button:hover { background: transparent; }
+  .ticks li:has(button):hover { transform: scale(1.18); }
+  .ticks li button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .ref-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-bottom: 16px; font-size: 15px; }
+  .ref-chip {
+    background: var(--heading); color: #ffffff; border-radius: 999px;
+    padding: 4px 12px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .ref-ask { color: var(--muted); }
+  .ref-ask b { color: var(--heading); }
+
+  /* The flip card is the one lifted surface on the page */
+  .scene { perspective: 1400px; }
+  .card { display: grid; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.4,.2,.2,1); }
+  .card.flipped { transform: rotateY(180deg); }
+  .face {
+    grid-area: 1 / 1;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    background: var(--card);
+    border-radius: 20px;
+    padding: 26px 28px 24px;
+    box-shadow: var(--lift);
+    min-height: 370px;
+    display: flex; flex-direction: column;
+  }
+  .face.back { transform: rotateY(180deg); }
+  .tag { align-self: flex-start; font-size: 14px; font-weight: 600; color: var(--teal); margin-bottom: 6px; }
+  .amount {
+    align-self: flex-start;
+    font-size: 36px; font-weight: 800; color: var(--heading); letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums lining-nums;
+    margin: 4px 0 12px; padding-bottom: 2px;
+    border-bottom: 2px solid var(--heading);
+  }
+  .prompt { margin-top: auto; padding-top: 16px; font-weight: 600; }
+  .choices { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+  .factor-label, .call-label { display: block; font-weight: 600; margin: 0 0 8px; }
+  .call-label { margin: 16px 0 0; }
+  #factorSelect {
+    font: inherit; font-size: 16px; width: 100%; max-width: 460px;
+    padding: 10px 12px; border: 2px solid var(--line); border-radius: 12px;
+    background: #ffffff; color: var(--ink);
+  }
+  #factorSelect:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-color: var(--teal); }
+  .factor-msg { color: var(--miss); font-size: 15px; font-weight: 600; margin: 8px 0 0; }
+  .choices button { flex: 1 1 180px; padding: 14px 22px; }
+
+  .twist { background: var(--mist-2); border-radius: 12px; padding: 12px 16px; margin-bottom: 14px; }
+  .twist b { color: var(--heading); }
+  .verdict-row { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 12px; }
+
+  /* The verdict lands like a review stamp */
+  .verdict {
+    display: inline-block;
+    font-weight: 800; font-size: 20px; letter-spacing: .08em; text-transform: uppercase;
+    padding: 5px 14px; border: 3px solid currentColor; border-radius: 6px;
+    transform: rotate(-4deg);
+  }
+  .verdict.is-material { color: var(--flag); }
+  .verdict.is-not { color: var(--heading); }
+  .verdict.stamped { animation: stamp .32s cubic-bezier(.3,1.4,.6,1) .5s both; }
+  @keyframes stamp {
+    0% { opacity: 0; transform: rotate(-4deg) scale(1.7); }
+    100% { opacity: 1; transform: rotate(-4deg) scale(1); }
+  }
+  .result {
+    font-weight: 600; padding: 4px 12px; border-radius: 999px; font-size: 15px;
+    border: 1.5px solid currentColor;
+    box-shadow: 0 2px 6px rgba(39, 53, 64, .14);
+  }
+  .result.right { color: var(--good); background: var(--good-bg); }
+  .result.wrong { color: var(--miss); background: var(--miss-bg); }
+  .idea { font-size: 15px; color: var(--muted); margin: 0; }
+  .takeaway-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: auto; padding-top: 10px; }
+  .idea b { color: var(--heading); }
+
+  /* End screen */
+  .score-detail { font-size: 15px; color: var(--muted); }
+  #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
+  .score-big { font-size: 34px; font-weight: 800; color: var(--heading); margin: 0 0 4px; font-variant-numeric: tabular-nums; }
+  .recap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .recap-grid .panel { margin: 0; }
+  .recap-grid ul { margin: 0; padding-left: 20px; }
+  .recap-grid li { margin-bottom: 6px; }
+  .calls { font-size: 15px; margin: 0; padding-left: 22px; }
+  .calls li { margin-bottom: 4px; }
+  .mark-right { color: var(--good); font-weight: 600; }
+  .mark-wrong { color: var(--miss); font-weight: 600; }
+  .bridge { background: var(--heading); color: #ffffff; border-radius: 14px; padding: 14px 18px; font-weight: 600; margin: 16px 0 0; }
+
+  /* Benchmark screen */
+  .table-scroll { overflow-x: auto; margin: 10px 0 14px; border-radius: 12px; }
+  .bench-table { width: 100%; border-collapse: collapse; font-size: 16px; font-variant-numeric: tabular-nums; }
+  .bench-table th { text-align: left; font-weight: 600; color: var(--heading); background: var(--mist); padding: 8px 10px; }
+  .bench-table td { padding: 8px 10px; vertical-align: middle; border-bottom: 1px solid var(--mist); }
+  .bench-table .num { text-align: right; white-space: nowrap; }
+  .bench-table input {
+    font: inherit; width: 120px; padding: 7px 10px; text-align: right;
+    border: 2px solid var(--line); border-radius: 10px; color: var(--ink); background: #ffffff;
+  }
+  .bench-table input:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; border-color: var(--teal); }
+  .step-nav { align-items: center; }
+  .step-nav #stepNextBtn { margin-left: auto; }
+  .bench-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; }
+  .bench-top .sub { margin-bottom: 22px; }
+  .bench-top .step-count { font-weight: 600; color: var(--heading); margin-left: auto; }
+  .picker-wrap { margin: 22px 0 26px; }
+  .picker-label { font-weight: 600; color: var(--heading); margin: 0 0 10px; font-size: 16px; }
+  .round-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .round-btn {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+    text-align: left; padding: 12px 14px;
+    background: var(--card); border: 2px solid var(--heading); border-radius: 12px;
+  }
+  .round-btn:hover { background: var(--mist); }
+  .round-btn.is-done { border-color: var(--good); }
+  .round-title { font-weight: 600; color: var(--heading); }
+  .round-sub { font-size: 14px; font-weight: 400; color: var(--muted); }
+  .round-btn.is-done .round-sub { color: var(--good); font-weight: 600; }
+  .step-count { font-size: 15px; color: var(--muted); }
+  /* Check my math: a hand-drawn tickmark, like a reviewer marking a schedule */
+  .tick-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #ffffff; color: var(--ink);
+    border: 1.5px solid var(--line); border-radius: 12px;
+    padding: 10px 18px 10px 14px;
+    box-shadow: 0 1px 2px rgba(39, 53, 64, .08);
+  }
+  .tick-btn:hover { background: var(--good-bg); border-color: var(--good); }
+  .tick { width: 26px; height: 22px; flex: none; }
+  .tick path {
+    fill: none; stroke: var(--good); stroke-width: 3.2;
+    stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: 40; stroke-dashoffset: 0;
+  }
+  .tick-btn:hover .tick path, .tick-btn:focus-visible .tick path { animation: draw-tick .45s ease-out; }
+  @keyframes draw-tick { from { stroke-dashoffset: 40; } to { stroke-dashoffset: 0; } }
+  .ans-row { display: flex; align-items: center; gap: 10px; }
+  .mark { font-size: 15px; font-weight: 600; white-space: nowrap; }
+  .mark.ok { color: var(--good); }
+  .mark.bad { color: var(--flag); font-size: 22px; font-weight: 800; line-height: 1; }
+  .fb.blank { color: var(--miss); }
+  .fb { display: block; font-size: 14px; font-weight: 600; margin-top: 6px; }
+  .fb:empty { display: none; }
+  .fb.bad { color: var(--flag); }
+
+  @media (max-width: 600px) {
+    body { padding: 14px 10px; font-size: 16px; }
+    h1 { font-size: 28px; }
+    .panel { padding: 18px 16px; }
+    .recap-grid { grid-template-columns: 1fr; }
+    .face { padding: 20px 18px; min-height: 0; }
+    .amount { font-size: 29px; }
+    .ticks { order: 3; flex-basis: 100%; }
+    .bench-table { font-size: 15px; }
+    .bench-table th, .bench-table td { padding: 6px 6px; }
+    .bench-table input { width: 88px; }
+    .bench-table .num { white-space: normal; }
+    .jump-row { grid-template-columns: 1fr; }
+    .round-picker { grid-template-columns: 1fr; }
+    .mark.ok { font-size: 20px; font-weight: 800; }
+    .mark-word { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .ans-row { gap: 6px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card, button, .ticks li { transition: none; }
+    .verdict.stamped { animation: none; }
+    .tick-btn:hover .tick path, .tick-btn:focus-visible .tick path { animation: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Live region for screen readers -->
+  <div id="live" class="sr-only" aria-live="polite"></div>
+
+  <!-- INTRO -->
+  <section id="intro">
+    <h1 id="introHeading" tabindex="-1">Material or Not?</h1>
+    <p class="sub">A quick warm-up on materiality using SAB No. 99, codified at ASC 250-10-S99-1</p>
+
+    <div class="panel">
+      <h2>Purpose</h2>
+      <p>Yellow's accounting team found errors during the 20Y8 year-end close, and your job is to decide which ones are material. Each card shows you why, using the SAB No. 99 factors from the lecture.</p>
+    </div>
+
+    <div class="panel">
+      <h2>Start with a rule of thumb</h2>
+      <p>A good starting point is 5% of net income.</p>
+      <div class="threshold">
+        <span>Net income $280,000</span><span>&times;</span><span>5%</span><span>=</span>
+        <span class="eq">$14,000 starting point</span>
+      </div>
+      <p>SAB No. 99, codified at ASC 250-10-S99-1, says this number is only a starting point. An error below the threshold may still be material, so size alone is not enough to decide. The real test is one question:</p>
+      <div class="question">Would this error change the decision of someone who relies on these numbers?</div>
+      <p>For Yellow Enterprises, those people include:</p>
+      <ul class="users">
+        <li>Investors who own Yellow's stock or are thinking about buying it</li>
+        <li>Stock analysts who publish estimates of Yellow's earnings</li>
+        <li>Yellow's board of directors and audit committee</li>
+      </ul>
+      <p class="note">Yellow is publicly traded and files with the SEC, so SAB No. 99 applies directly.</p>
+    </div>
+
+
+    <div class="actions">
+      <button class="btn-primary resume-btn" type="button" hidden>Return to the review</button>
+      <button class="btn-primary" id="startBtn" type="button">Next: choose a benchmark</button>
+    </div>
+    <p class="note" id="savedNote" hidden></p>
+    <div class="picker-wrap">
+      <p class="picker-label">Already know the benchmark steps? Jump to a round.</p>
+      <div class="round-picker"></div>
+    </div>
+  </section>
+
+  <!-- BENCHMARK SEQUENCE -->
+  <section id="bench" hidden>
+    <h1 id="benchHeading" tabindex="-1">Choose a benchmark</h1>
+    <div class="bench-top">
+      <p class="sub">Six quick steps before the review.</p>
+      <span class="step-count" id="stepCount" aria-live="polite"></span>
+    </div>
+
+    <div class="panel bench-step">
+      <h2 class="step-h" tabindex="-1">Step 1: Calculate the options</h2>
+      <p>The same company can produce very different starting points depending on the benchmark. Calculate each threshold below. The percentages are common examples taken from ranges accountants use. Firms set their own, and SAB No. 99 doesn't set any.</p>
+      <div class="table-scroll">
+        <table class="bench-table">
+          <thead>
+            <tr><th scope="col">Benchmark</th><th scope="col" class="num">Calculation</th><th scope="col">Your threshold</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Net income</td><td class="num">$280,000 &times; 5%</td>
+              <td><div class="ans-row"><input type="text" inputmode="decimal" id="b-ni" aria-label="Threshold using 5% of net income"><span class="mark" id="mk-ni" aria-live="polite"></span></div><span class="fb" id="fb-ni"></span></td>
+            </tr>
+            <tr>
+              <td>Income before income taxes</td><td class="num">$365,000 &times; 5%</td>
+              <td><div class="ans-row"><input type="text" inputmode="decimal" id="b-pre" aria-label="Threshold using 5% of income before income taxes"><span class="mark" id="mk-pre" aria-live="polite"></span></div><span class="fb" id="fb-pre"></span></td>
+            </tr>
+            <tr>
+              <td>Sales</td><td class="num">$2,450,000 &times; 0.5%</td>
+              <td><div class="ans-row"><input type="text" inputmode="decimal" id="b-sales" aria-label="Threshold using 0.5% of sales"><span class="mark" id="mk-sales" aria-live="polite"></span></div><span class="fb" id="fb-sales"></span></td>
+            </tr>
+            <tr>
+              <td>Total assets</td><td class="num">$1,855,000 &times; 1%</td>
+              <td><div class="ans-row"><input type="text" inputmode="decimal" id="b-assets" aria-label="Threshold using 1% of total assets"><span class="mark" id="mk-assets" aria-live="polite"></span></div><span class="fb" id="fb-assets"></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button type="button" id="checkMathBtn" class="tick-btn"><svg class="tick" viewBox="0 0 28 24" aria-hidden="true" focusable="false"><path d="M3 13.5 C 5.5 14.5, 7.5 17, 9.5 20.5 C 12.5 13, 17.5 7, 25 2.5"/></svg>Check my math</button>
+    </div>
+
+    <div class="panel bench-step">
+      <h2 class="step-h" tabindex="-1">Step 2: Pick one for Yellow</h2>
+      <p>Your four thresholds run from $12,250 to $18,550. Which one fits Yellow best? Think about who reads Yellow's statements and what they watch most closely.</p>
+      <details class="check">
+        <summary>Check your thinking</summary>
+        <p>Yellow is a profitable public company, and its investors and stock analysts focus on earnings. That makes an earnings benchmark a common choice. Net income and income before income taxes are both easy to defend.</p>
+        <p>The review uses 5% of net income, or <b>$14,000</b>. A different choice may also be appropriate if you explain why the benchmark fits the people reading the statements.</p>
+        <p><b>What a strong different choice looks like.</b> Say you pick 5% of income before income taxes, or $18,250. You could explain your choice this way: Yellow’s investors watch earnings, but income tax expense may rise or fall for reasons unrelated to how Yellow ran its business, such as a change in tax law. Income before taxes shows earnings without that swing. This explanation ties the choice to what Yellow’s readers rely on.</p>
+        <p><b>What a weak choice looks like.</b> “I picked total assets because that gives the biggest threshold.” That picks a number to make errors look small and says nothing about who reads the statements.</p>
+        <p><b>Then use the same threshold for every error.</b> A $16,000 error exceeds $14,000 but falls below $18,250. The benchmark changes the numerical comparison, but your final materiality judgment must also consider qualitative factors.</p>
+      </details>
+    </div>
+
+    <div class="panel bench-step">
+      <h2 class="step-h" tabindex="-1">Step 3: See a choice change the answer</h2>
+      <p>On December 30, Yellow bought $16,000 of equipment on account, and the purchase was recorded twice. Equipment and accounts payable are both overstated by $16,000. Net income doesn't change.</p>
+      <p>Is the error material using the $14,000 net income threshold? Using the $18,550 total assets threshold?</p>
+      <details class="check">
+        <summary>Check your thinking</summary>
+        <p>Using net income, $16,000 is over $14,000, so it starts out as material. Using total assets, $16,000 is under $18,550, so it starts out as not material. Same error, different answer.</p>
+        <p>Which is right? This error affects only the balance sheet. The error overstates what Yellow owns and owes without affecting net income. That makes a balance sheet benchmark, such as total assets, relevant here. If you use net income as your benchmark, explain why, such as Yellow’s readers relying most on earnings. Either way, apply your approach consistently and check the qualitative factors before deciding.</p>
+      </details>
+    </div>
+
+    <div class="panel bench-step">
+      <h2 class="step-h" tabindex="-1">Step 4: Try a different company</h2>
+      <p>Birch Lane Hardware is another public company. This year it barely broke even.</p>
+      <div class="table-scroll">
+        <table class="bench-table">
+          <thead><tr><th scope="col">Birch Lane Hardware</th><th scope="col" class="num">Amount</th></tr></thead>
+          <tbody>
+            <tr><td>Net income</td><td class="num">$4,000</td></tr>
+            <tr><td>Sales</td><td class="num">$1,200,000</td></tr>
+            <tr><td>Total assets</td><td class="num">$900,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Would 5% of net income work as Birch Lane's benchmark? If not, what would you use?</p>
+      <details class="check">
+        <summary>Check your thinking</summary>
+        <p>5% of $4,000 is $200. Almost every error would exceed that threshold, so current-year earnings may provide a less useful benchmark. When earnings are close to zero, fluctuate widely, or show a loss, accountants may choose a steadier figure.</p>
+        <p>Using 0.5% of sales gives $6,000, and 1% of total assets gives $9,000. Either is easier to defend for Birch Lane if you explain why the benchmark fits what its financial statement readers rely on. Another option is to use a normal year’s earnings, based on Birch Lane’s results from prior years.</p>
+      </details>
+    </div>
+
+    <div class="panel bench-step">
+      <h2 class="step-h" tabindex="-1">Step 5: What pushes the choice</h2>
+      <ul class="users">
+        <li><b>What the business focuses on.</b> Companies run to earn a profit for their owners are usually measured on earnings. Businesses built around their assets, such as property companies, are often measured on assets.</li>
+        <li><b>Whether profit is the goal.</b> Nonprofits and government bodies do not operate to earn a profit for owners, so expenses or assets may be more relevant.</li>
+        <li><b>Whether the figure is steady.</b> When results swing from year to year, accountants may use a normal figure based on prior years.</li>
+        <li><b>Risk.</b> The percentages are ranges, not fixed rules. Higher risk may support a lower percentage and a smaller threshold, but the choice should reflect what matters to financial statement readers.</li>
+      </ul>
+    </div>
+
+    <div class="panel bench-step">
+      <h2 class="step-h" tabindex="-1">Step 6: How errors combine</h2>
+      <p>Some cards show two or more errors at once. These are marked as netting checks. Here is how SAB No. 99 says to handle them.</p>
+      <ul class="users">
+        <li><b>Look at each error on its own first.</b> If one error is material by itself, another error does not erase that effect.</li>
+        <li><b>Check line items and subtotals as well as net income.</b> Consider how the errors affect amounts such as gross profit, income from operations, and total current assets.</li>
+        <li><b>Watch the direction.</b> Two errors offset only when they push the same amount in opposite directions. If they push in the same direction, they add up.</li>
+        <li><b>Then judge them together.</b> If two small errors affect the same account in opposite directions, the net error is the difference. You still need to consider each error’s nature and the combined effects on the financial statements.</li>
+        <li><b>Be careful offsetting an estimate against an exact amount.</b> An estimate is less precise, so equal dollar amounts do not necessarily support treating the errors as fully offsetting.</li>
+      </ul>
+      <details class="check">
+        <summary>See SAB No. 99's own example</summary>
+        <p>Say sales and expenses are both overstated by $22,000. Net income comes out exactly right. But if the sales error is material, the statements are still misleading because anyone relying on sales or expenses is looking at incorrect amounts. Correct net income does not fix those errors.</p>
+      </details>
+    </div>
+    <p class="note" id="benchNote" hidden>The review uses Yellow's $14,000 net income threshold. Each error is its own scenario, so a twist on one card doesn't carry over to the others. To keep the math simple, the cards ignore income taxes unless a card says otherwise. There are three rounds of 10 errors, each with a different set. You can do them in any order, and you can jump straight to a round from the intro screen next time.</p>
+    <div class="picker-wrap" id="benchPicker" hidden>
+      <p class="picker-label">Choose a round to start.</p>
+      <div class="round-picker"></div>
+    </div>
+    <div class="actions step-nav">
+      <button type="button" id="benchBackBtn">Back</button>
+      <button class="btn-primary resume-btn" type="button" hidden>Return to the review</button>
+      <button class="btn-primary" id="stepNextBtn" type="button">Next step</button>
+    </div>
+  </section>
+
+  <!-- CASES -->
+  <section id="game" hidden>
+    <div class="status">
+      <span id="counter">Round 1 of 3: error 1 of 10</span>
+      <ol class="ticks" id="ticks" aria-label="Your answers so far"></ol>
+      <span id="scoreLine">Score: 0</span>
+    </div>
+    <div class="ref-bar">
+      <span class="ref-chip">Starting point $14,000</span>
+      <span class="ref-ask"><b>Ask:</b> Would this error change the decision of someone who relies on these numbers?</span>
+    </div>
+
+    <div class="scene">
+      <div class="card" id="card">
+        <!-- Front -->
+        <div class="face front" id="front">
+          <span class="tag" id="frontTag">Error 1</span>
+          <h2 id="frontTitle" tabindex="-1"></h2>
+          <div class="amount" id="frontAmount"></div>
+          <p id="frontText"></p>
+          <div class="prompt">
+            <label class="factor-label" for="factorSelect">1. Which SAB No. 99 factor drives your call?</label>
+            <select id="factorSelect" aria-describedby="factorMsg">
+              <option value="" disabled selected hidden>Choose one</option>
+              <option>Precision of measurement</option>
+              <option>Changes in earnings or trends</option>
+              <option>Analysts&#39; expectations</option>
+              <option>Loss versus income</option>
+              <option>Significant business segment</option>
+              <option>Regulatory compliance</option>
+              <option>Loan agreements or other contracts</option>
+              <option>Management compensation</option>
+              <option>Unlawful transactions</option>
+              <option>Not one of the nine factors</option>
+            </select>
+            <p class="factor-msg" id="factorMsg" role="alert" hidden>Choose what drives your call first, then decide.</p>
+            <p class="call-label">2. Is this error material?</p>
+          </div>
+          <div class="choices">
+            <button type="button" data-call="material">Material</button>
+            <button type="button" data-call="not">Not material</button>
+          </div>
+          <div class="actions" style="margin-top:12px;">
+            <button type="button" class="prev-btn" id="prevFront" hidden>Previous error</button>
+          </div>
+        </div>
+        <!-- Back -->
+        <div class="face back" id="back" aria-hidden="true">
+          <span class="tag" id="backTag"></span>
+          <p class="review-note" id="reviewNote" hidden>Reviewing an earlier answer.</p>
+          <div class="twist" id="backTwist"></div>
+          <div class="verdict-row">
+            <span class="verdict" id="backVerdict"></span>
+            <span class="result" id="backResult"></span>
+          </div>
+          <h3 id="backHeading" tabindex="-1">Why</h3>
+          <p id="backWhy"></p>
+          <div class="takeaway-row">
+            <p class="idea" id="backIdea"></p>
+            <span class="result" id="backFactor"></span>
+          </div>
+          <div class="actions" style="margin-top:12px;">
+            <button type="button" class="prev-btn" id="prevBack" hidden>Previous error</button>
+            <button type="button" class="btn-primary" id="nextBtn">Next error</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav class="jump" aria-labelledby="jump-game">
+      <p class="jump-label" id="jump-game">Need a refresher?</p>
+      <div class="jump-row">
+        <button type="button" class="jump-btn" data-go="intro">
+          <span class="jump-title">Back to the intro</span>
+          <span class="jump-sub">Purpose, the 5% rule of thumb, and who relies on Yellow's numbers</span>
+        </button>
+        <button type="button" class="jump-btn" data-go="bench">
+          <span class="jump-title">Back to the benchmark steps</span>
+          <span class="jump-sub">The four thresholds and what pushes the choice</span>
+        </button>
+      </div>
+    </nav>
+    <p class="review-hint"><b>Missed one?</b> Click an amber circle at the top to go back to that error and read why. You can also use Previous error to step back one card at a time. To keep the math simple, the cards ignore income taxes unless a card says otherwise.</p>
+  </section>
+
+
+  <!-- END -->
+  <section id="end" hidden>
+    <h1 id="endHeading" tabindex="-1">Round complete</h1>
+    <p class="score-big" id="finalScore"></p>
+    <p id="finalMsg"></p>
+    <p class="score-detail" id="netScore"></p>
+    <div class="actions">
+      <button type="button" class="btn-primary" id="nextRoundBtn">Start the next round</button>
+      <button type="button" id="reviewMissedBtn" hidden>Review my missed errors</button>
+    </div>
+    <div class="picker-wrap">
+      <p class="picker-label">Or pick any round.</p>
+      <div class="round-picker"></div>
+    </div>
+
+    <div class="recap-grid">
+      <div class="panel">
+        <h3>A small error can still matter when it</h3>
+        <ul>
+          <li>Turns a profit into a loss</li>
+          <li>Hides a missed analyst estimate</li>
+          <li>Breaks a loan agreement or other contract</li>
+          <li>Increases management's pay, like a bonus</li>
+          <li>Hides a change in an earnings trend</li>
+          <li>Involves a part of the business investors are watching</li>
+          <li>Breaks a regulation or hides an illegal payment</li>
+          <li>Was done on purpose by management</li>
+          <li>Adds up with other errors, including errors that repeat each year</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>An error may not matter when it</h3>
+        <ul>
+          <li>Moves an amount between accounts without changing any totals a reader uses</li>
+          <li>Comes from an estimate that still falls in a reasonable range</li>
+        </ul>
+        <h3 style="margin-top:14px;">And remember</h3>
+        <ul>
+          <li>5% is only a starting point</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <h3>Netting rules</h3>
+      <ul>
+        <li>Judge each error on its own first. A material error can't be erased by another error.</li>
+        <li>Check line items and subtotals, like gross profit and operating income, not just net income.</li>
+        <li>Errors that push the same direction add up. Only opposite directions offset.</li>
+        <li>Judge each error, then judge them together. Opposite errors in the same account leave only the difference.</li>
+        <li>Take particular care offsetting an estimate against an exact amount.</li>
+      </ul>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <h3>Your calls this round</h3>
+      <ol class="calls" id="callList"></ol>
+    </div>
+
+
+    <div class="actions">
+      <button type="button" id="restartBtn">Clear my progress</button>
+    </div>
+    <nav class="jump" aria-labelledby="jump-end">
+      <p class="jump-label" id="jump-end">Need a refresher?</p>
+      <div class="jump-row">
+        <button type="button" class="jump-btn" data-go="intro">
+          <span class="jump-title">Back to the intro</span>
+          <span class="jump-sub">Purpose, the 5% rule of thumb, and who relies on Yellow's numbers</span>
+        </button>
+        <button type="button" class="jump-btn" data-go="bench">
+          <span class="jump-title">Back to the benchmark steps</span>
+          <span class="jump-sub">The four thresholds and what pushes the choice</span>
+        </button>
+      </div>
+    </nav>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  var pool = [
+    {
+      id: "bad-debt-estimate-difference",
+      group: "factor",
+      title: "Bad debt estimate difference",
+      amount: "$6,000",
+      text: "The controller thinks the allowance for doubtful accounts should be $6,000 higher than the amount recorded.",
+      twist: "The recorded amount still falls inside a reasonable range of estimates.",
+      material: false,
+      why: "An estimate is a judgment, not an exact count. SAB No. 99 calls this precision of measurement: whether a number can be measured exactly or has to be estimated, and how much room for error the estimate has. A difference that stays inside a reasonable range is usually not worth raising.",
+      idea: "Precision of measurement",
+      accept: ["Precision of measurement"]
+    },
+    {
+      id: "repair-bill-never-recorded",
+      group: "factor",
+      title: "Repair bill never recorded",
+      amount: "$5,000",
+      text: "A $5,000 equipment repair from December was never recorded.",
+      twist: "Yellow reported $3,000 of income before taxes for the fourth quarter. Recording the bill turns that into a $2,000 loss.",
+      material: true,
+      why: "$5,000 is far under $14,000, but SAB No. 99 lists an error that changes a loss into income, or income into a loss, as a reason a small error can be material. A loss tells a very different story than a profit, and investors reading Yellow's quarterly results would see the business differently.",
+      idea: "Loss versus income",
+      accept: ["Loss versus income"]
+    },
+    {
+      id: "freight-bill-never-recorded",
+      group: "factor",
+      title: "Freight bill never recorded",
+      amount: "$7,000",
+      text: "A December freight bill was never recorded. After taxes, net income is overstated by $7,000.",
+      twist: "Stock analysts estimated Yellow's earnings per share at $8.00, and Yellow reported exactly $8.00. Fix the error and EPS drops to $7.80, a miss.",
+      material: true,
+      why: "$7,000 is half the $14,000 starting point. But SAB No. 99 lists analysts' expectations as a reason a small error can be material, meaning an error that hides a failure to meet analysts' consensus estimate. Investors watch whether a public company hits its estimate, and the corrected numbers miss it.",
+      idea: "Analysts' expectations",
+      accept: ["Analysts' expectations"]
+    },
+    {
+      id: "store-sales-recorded-as-online-sales",
+      group: "factor",
+      title: "Store sales recorded as online sales",
+      amount: "$5,000",
+      text: "$5,000 of in-store sales was recorded as online sales. Total sales and net income do not change.",
+      twist: "Yellow reports online sales separately and has told investors that online sales are the key to its future growth.",
+      material: true,
+      why: "The totals are right, but the online numbers investors are watching are overstated. SAB No. 99 says an error in a significant business segment, a part of the business the company has identified as important, is more likely to be material.",
+      idea: "Significant business segment",
+      accept: ["Significant business segment"]
+    },
+    {
+      id: "one-sale-recorded-twice",
+      group: "factor",
+      title: "One sale recorded twice",
+      amount: "$9,000",
+      text: "A customer order was recorded twice. After taxes, net income is overstated by $9,000.",
+      twist: "Yellow's net income has grown every year. Net income was $275,000 in 20Y7. Fix the error and 20Y8 net income is $271,000, so growth becomes a decline.",
+      material: true,
+      why: "$9,000 is under the $14,000 starting point. But SAB No. 99 lists hiding a change in earnings or other trends as a reason a small error can be material. Investors would read a year of decline very differently from another year of growth.",
+      idea: "Changes in earnings or trends",
+      accept: ["Changes in earnings or trends"]
+    },
+    {
+      id: "january-sale-recorded-in-december",
+      group: "factor",
+      title: "January sale recorded in December",
+      amount: "$6,000",
+      text: "A $6,000 shipment that went out in January was recorded as a December sale.",
+      twist: "That $6,000 pushes sales just over the target for the annual bonus of Yellow's vice president of sales.",
+      material: true,
+      why: "The error is small, but it changes how much a manager gets paid. SAB No. 99 lists management compensation as a reason a small error can be material. That means an error that increases a manager's pay, such as by meeting a bonus target.",
+      idea: "Management compensation",
+      accept: ["Management compensation"]
+    },
+    {
+      id: "payroll-taxes-never-recorded",
+      group: "factor",
+      title: "Payroll taxes never recorded",
+      amount: "$4,000",
+      text: "Yellow owes $4,000 of December payroll taxes that were never recorded or paid to the IRS by the due date.",
+      twist: "Paying payroll taxes late breaks federal tax rules and can bring penalties.",
+      material: true,
+      why: "The amount is small, but SAB No. 99 lists an error that affects compliance with regulations as a reason a small error can be material. This one hides a failure to follow tax rules.",
+      idea: "Regulatory compliance",
+      accept: ["Regulatory compliance"]
+    },
+    {
+      id: "payment-recorded-as-consulting-fees",
+      group: "factor",
+      title: "Payment recorded as consulting fees",
+      amount: "$2,500",
+      text: "A $2,500 payment was recorded as consulting fees. Since the payment was expensed either way, net income is correct.",
+      twist: "The payment went to a foreign government official to help Yellow win a contract. It may be an illegal bribe.",
+      material: true,
+      why: "The dollar amount is tiny and net income is right. But SAB No. 99 lists an error that hides an unlawful transaction as a reason a small error can be material. Calling it consulting fees hides what the payment really was.",
+      idea: "Unlawful transactions",
+      accept: ["Unlawful transactions"]
+    },
+    {
+      id: "advertising-bill-never-recorded",
+      group: "factor",
+      title: "Advertising bill never recorded",
+      amount: "$10,000",
+      text: "A $10,000 December advertising bill was never recorded. Expenses and accounts payable are both understated by $10,000.",
+      twist: "Yellow has a bank line of credit that requires a current ratio of at least 2.0. Yellow reported current assets of $612,000 and current liabilities of $300,000, a ratio of 2.04. Record the bill and the ratio drops to about 1.97.",
+      material: true,
+      why: "$10,000 is under the $14,000 starting point. But SAB No. 99 lists an error that affects compliance with loan covenants or other contracts as a reason a small error can be material. Correcting this one puts Yellow below the ratio its credit agreement requires.",
+      idea: "Loan agreements or other contracts",
+      accept: ["Loan agreements or other contracts"]
+    },
+    {
+      id: "expense-posted-to-the-wrong-account",
+      group: "small",
+      title: "Expense posted to the wrong account",
+      amount: "$1,500",
+      text: "A $1,500 bill was posted to Office Supplies Expense instead of Postage Expense.",
+      twist: "Both accounts are administrative expenses. Total expenses and net income do not change.",
+      material: false,
+      why: "It is still an error, and the accounting team can fix it. But no investor or analyst would make a different decision because of it.",
+      idea: "No qualitative factor applies",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "december-invoice-missed-in-the-close",
+      group: "small",
+      title: "December invoice missed in the close",
+      amount: "$3,000",
+      text: "A $3,000 invoice for December cleaning services arrived late and was never recorded. Expenses are understated and net income is overstated by $3,000.",
+      twist: "No twist. It is a routine bill, and nothing about it touches a trend, anyone's pay, an analyst estimate, or a contract.",
+      material: false,
+      why: "$3,000 is well under the $14,000 starting point, and none of the SAB No. 99 factors apply. SAB No. 99 uses a missed invoice from the normal year-end close as an example of a small error that doesn't always have to be corrected, as long as the factors are considered first.",
+      idea: "No qualitative factor applies",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "utility-bill-accrued-too-low",
+      group: "small",
+      title: "Utility bill accrued too low",
+      amount: "$2,000",
+      text: "The December utility bill was accrued at $2,000 less than the actual bill.",
+      twist: "No twist. Nothing else about this error affects a trend, anyone's pay, an estimate, or an analyst target.",
+      material: false,
+      why: "$2,000 is well under the $14,000 starting point, and none of the SAB No. 99 factors apply. It should still be corrected, but it would not change any reader's decision. Not every small error hides a problem.",
+      idea: "No qualitative factor applies",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "next-year-s-insurance-expensed-early",
+      group: "small",
+      title: "Next year's insurance expensed early",
+      amount: "$2,400",
+      text: "A $2,400 insurance premium that covers next year was recorded as December insurance expense instead of prepaid insurance. Net income is understated by $2,400.",
+      twist: "No twist. The error makes the year look slightly worse, not better, and no factor applies.",
+      material: false,
+      why: "$2,400 is far under the $14,000 starting point, and nothing about it changes a trend, a bonus, an analyst estimate, or any other SAB No. 99 factor. It should be corrected, but it would not change a reader's decision.",
+      idea: "No qualitative factor applies",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "office-furniture-recorded-as-repairs",
+      group: "small",
+      title: "Office furniture recorded as repairs",
+      amount: "$3,500",
+      text: "New office furniture costing $3,500 was recorded as repairs expense instead of as an asset. Assets are understated, and net income is understated by $3,500.",
+      twist: "No twist. The amount is exact, it is small, and no factor applies.",
+      material: false,
+      why: "$3,500 is well under the $14,000 starting point, and none of the SAB No. 99 factors apply. The accounting team should fix it, but no investor or analyst would make a different decision because of it.",
+      idea: "No qualitative factor applies",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "office-supplies-counted-too-high",
+      group: "small",
+      title: "Office supplies counted too high",
+      amount: "$1,800",
+      text: "Office supplies on hand were counted $1,800 too high at year end. Supplies are overstated, and supplies expense is understated, by $1,800.",
+      twist: "No twist. It is a small counting error, and no factor applies.",
+      material: false,
+      why: "$1,800 is far under the $14,000 starting point, and none of the SAB No. 99 factors apply. The count should be corrected, but no investor or analyst would decide differently because of it.",
+      idea: "No qualitative factor applies",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "inventory-is-overstated",
+      group: "sizeintent",
+      title: "Inventory is overstated",
+      amount: "$20,000",
+      text: "Ending inventory was counted too high. That means cost of goods sold is too low, and net income is overstated by $20,000.",
+      twist: "No twist this time. It is just big.",
+      material: true,
+      why: "$20,000 is well over the $14,000 starting point. SAB No. 99 says size by itself usually isn't enough, so you still ask whether anything makes it less important. Here, nothing does. Net income is off by $20,000, and investors would see the year differently.",
+      idea: "Over the threshold",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "personal-purchases-charged-to-the-business",
+      group: "sizeintent",
+      title: "Personal purchases charged to the business",
+      amount: "$450",
+      text: "The accounting team found $450 of personal purchases charged to Yellow's company credit card.",
+      twist: "This was not a mistake. Yellow's vice president of sales made these charges on purpose.",
+      material: true,
+      why: "SAB No. 99 says intent alone does not make an error material, but it can be significant evidence that it is. It also warns not to assume a small error made on purpose is immaterial. If a manager will bend the books by $450, the audit committee and investors have reason to doubt the rest of the numbers.",
+      idea: "Done on purpose by management",
+      accept: ["Not one of the nine factors", "Unlawful transactions"]
+    },
+    {
+      id: "depreciation-too-low-for-four-years",
+      group: "sizeintent",
+      title: "Depreciation too low for four years",
+      amount: "$4,000 a year",
+      text: "Depreciation on one piece of equipment has been understated by $4,000 a year for four years, including 20Y8.",
+      twist: "This year's error is only $4,000, but accumulated depreciation is now understated by $16,000. Equipment, net, and retained earnings are both overstated by $16,000.",
+      material: true,
+      why: "Looking only at this year, the error seems small. SAB No. 99 says to consider how errors from prior periods affect the current statements, because small errors that repeat can build up. The $16,000 built-up error is over the $14,000 starting point.",
+      idea: "Small errors that repeat add up",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "four-small-unrelated-errors",
+      group: "sizeintent",
+      title: "Four small, unrelated errors",
+      amount: "4 \u00d7 $4,000",
+      text: "The accounting team found four separate errors in different accounts. Each one is $4,000, well under the $14,000 starting point.",
+      twist: "All four overstate net income. Together they total $16,000.",
+      material: true,
+      why: "You judge errors together, not one at a time. Four errors that each look small add up to an amount over the starting point.",
+      idea: "Errors add up",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "used-up-rent-never-expensed",
+      group: "sizeintent",
+      title: "Used-up rent never expensed",
+      amount: "$17,000",
+      text: "Yellow prepaid its warehouse rent. $17,000 of that rent was used up during 20Y8 but never moved to rent expense. Prepaid rent and net income are both overstated by $17,000.",
+      twist: "No twist. It clears the starting point on its own.",
+      material: true,
+      why: "$17,000 is over the $14,000 starting point. SAB No. 99 says size by itself usually isn't enough, so you still ask whether anything makes it less important. Here, nothing does, and investors would see a year that looks better than it was.",
+      idea: "Over the threshold",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "december-bills-held-until-january",
+      group: "sizeintent",
+      title: "December bills held until January",
+      amount: "$5,000",
+      text: "Yellow's vice president of operations told the accounting team to hold $5,000 of December bills and record them in January.",
+      twist: "This was not a mistake. The vice president said it would make the year look a little better.",
+      material: true,
+      why: "$5,000 is well under the $14,000 starting point. But SAB No. 99 says not to assume a small error is immaterial when it was made on purpose to manage earnings. Intent doesn't make an error material by itself, but it is significant evidence that it is, because whoever did it believed the numbers mattered.",
+      idea: "Done on purpose by management",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "two-big-errors-that-offset",
+      group: "netting",
+      title: "Two big errors that offset",
+      amount: "$20,000 + $20,000",
+      text: "Inventory is overstated by $20,000. Accrued expenses are also overstated by $20,000.",
+      twist: "Net income comes out exactly right, because the two errors cancel each other out.",
+      material: true,
+      why: "Each error is over the starting point on its own. Assets and liabilities are both wrong by $20,000, so the balance sheet investors read is still wrong. SAB No. 99 says a material error can't be erased by other errors.",
+      idea: "Errors can't cancel each other out",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "two-errors-in-accounts-receivable",
+      group: "netting",
+      title: "Two errors in accounts receivable",
+      amount: "$7,500 and $6,000",
+      text: "A $7,500 customer invoice was recorded twice. A different $6,000 invoice was never recorded. Both errors are in accounts receivable and sales.",
+      twist: "The errors push in opposite directions in the same accounts. Receivables and sales are overstated by only $1,500 overall.",
+      material: false,
+      why: "Each error is under $14,000 on its own, they hit the same accounts, and nothing about them affects an analyst estimate, anyone's pay, or a profit or loss. What's left is $1,500, which is small.",
+      idea: "Opposite errors in the same account leave only the difference",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "rent-and-interest-swapped",
+      group: "netting",
+      title: "Rent and interest swapped",
+      amount: "$16,000 and $16,000",
+      text: "Rent expense is understated by $16,000. Interest expense is overstated by $16,000. Net income comes out exactly right.",
+      twist: "Rent is an operating expense, but interest is not. Income from operations is overstated by $16,000.",
+      material: true,
+      why: "Each error is over the starting point by itself, so neither one can be erased by the other. And investors use income from operations to judge how the business itself is doing, so a $16,000 miss there matters.",
+      idea: "Check subtotals, not just net income",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "an-estimate-offset-against-an-exact-amount",
+      group: "netting",
+      title: "An estimate offset against an exact amount",
+      amount: "$16,000 and $16,000",
+      text: "A supplier invoice was recorded $16,000 too high. The warranty liability, an estimate, is $16,000 below the low end of its reasonable range.",
+      twist: "Net income looks right if you net the two. But the invoice error is exact, and the warranty error is measured against an estimate.",
+      material: true,
+      why: "When a recorded estimate falls outside the reasonable range, the error is measured to the closest end of that range, so the warranty error is $16,000. Each error is over the $14,000 starting point on its own, so neither can be erased by the other. SAB No. 99 also says to take particular care when offsetting an estimate against an exact amount, because an estimate is less precise.",
+      idea: "Be careful offsetting an estimate against an exact amount",
+      accept: ["Not one of the nine factors", "Precision of measurement"]
+    },
+    {
+      id: "two-errors-that-look-like-a-match",
+      group: "netting",
+      title: "Two errors that look like a match",
+      amount: "$8,000 and $8,000",
+      text: "Ending inventory is overstated by $8,000. Accrued wages are understated by $8,000. Both amounts are the same, so they seem to cancel.",
+      twist: "They don't cancel. Overstated inventory raises net income, and understated wages also raise net income. Together they overstate net income by $16,000.",
+      material: true,
+      why: "Matching amounts don't mean the errors offset. You have to check which way each one pushes net income. These both push it up, so they add up past the $14,000 starting point.",
+      idea: "Errors that push the same direction add up",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "two-inventory-count-errors",
+      group: "netting",
+      title: "Two inventory count errors",
+      amount: "$4,000 and $3,000",
+      text: "At year end, one warehouse counted $4,000 of inventory that wasn't there. Another warehouse missed $3,000 of inventory that was.",
+      twist: "The errors push inventory in opposite directions. Inventory is overstated by only $1,000 overall.",
+      material: false,
+      why: "Each error is well under $14,000 on its own, both hit the same account, and no factor applies. What's left is a $1,000 difference, which is small.",
+      idea: "Opposite errors in the same account leave only the difference",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "cost-of-goods-sold-and-selling-expenses-swapped",
+      group: "netting",
+      title: "Cost of goods sold and selling expenses swapped",
+      amount: "$15,000 and $15,000",
+      text: "Cost of goods sold is understated by $15,000. Selling expenses are overstated by $15,000. Net income comes out exactly right.",
+      twist: "Gross profit is overstated by $15,000.",
+      material: true,
+      why: "Each error is over the $14,000 starting point by itself, so neither can erase the other. And readers watch gross profit to see how much Yellow earns on what it sells, so a $15,000 miss there matters.",
+      idea: "Check subtotals, not just net income",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "two-small-errors-that-partly-offset",
+      group: "netting",
+      title: "Two small errors that partly offset",
+      amount: "$3,000 and $2,500",
+      text: "Sales are overstated by $3,000 because one invoice was recorded twice. Cost of goods sold is overstated by $2,500 because of a separate pricing error.",
+      twist: "Net income is overstated by only $500, and both errors are small on their own.",
+      material: false,
+      why: "Judge each error on its own first. $3,000 and $2,500 are both well under the $14,000 starting point, and no factor applies. Then judge them together. Sales, gross profit, and net income are each off by $3,000 or less, which would not change a reader's decision.",
+      idea: "Judge each error, then judge them together",
+      accept: ["Not one of the nine factors"]
+    },
+    {
+      id: "two-errors-that-both-raise-net-income",
+      group: "netting",
+      title: "Two errors that both raise net income",
+      amount: "$7,000 and $8,000",
+      text: "Accrued utilities are understated by $7,000. Prepaid insurance is overstated by $8,000 because part of it was already used up.",
+      twist: "Both errors raise net income. Together they overstate it by $15,000.",
+      material: true,
+      why: "Each error is under the starting point, but they push net income the same way, so they add up. $15,000 is over the $14,000 starting point.",
+      idea: "Errors that push the same direction add up",
+      accept: ["Not one of the nine factors"]
+    }
+  ];
+
+  var ROUNDS = 3;
+  var STORE_KEY = "yellow-materiality-warmup-v2";
+  // Each round is the same 10 errors every time, so students can jump to any round.
+  // Every round has 3 factor cards, 2 small errors, 2 size or intent cards, and 3 netting checks.
+  var ROUND_SETS = [
+    ["repair-bill-never-recorded", "payroll-taxes-never-recorded", "bad-debt-estimate-difference",
+     "expense-posted-to-the-wrong-account", "december-invoice-missed-in-the-close",
+     "inventory-is-overstated", "personal-purchases-charged-to-the-business",
+     "two-big-errors-that-offset", "two-errors-in-accounts-receivable", "rent-and-interest-swapped"],
+    ["freight-bill-never-recorded", "store-sales-recorded-as-online-sales", "advertising-bill-never-recorded",
+     "utility-bill-accrued-too-low", "next-year-s-insurance-expensed-early",
+     "depreciation-too-low-for-four-years", "four-small-unrelated-errors",
+     "an-estimate-offset-against-an-exact-amount", "two-inventory-count-errors", "cost-of-goods-sold-and-selling-expenses-swapped"],
+    ["one-sale-recorded-twice", "january-sale-recorded-in-december", "payment-recorded-as-consulting-fees",
+     "office-furniture-recorded-as-repairs", "office-supplies-counted-too-high",
+     "used-up-rent-never-expensed", "december-bills-held-until-january",
+     "two-errors-that-look-like-a-match", "two-small-errors-that-partly-offset", "two-errors-that-both-raise-net-income"]
+  ];
+
+  var $ = function (id) { return document.getElementById(id); };
+  var intro = $("intro"), bench = $("bench"), game = $("game"), end = $("end");
+  var card = $("card"), front = $("front"), back = $("back");
+  var live = $("live");
+  var byId = {};
+  pool.forEach(function (c) { byId[c.id] = c; });
+
+  // ---------- Saved progress ----------
+  var state = null;
+  function shuffle(list) {
+    var a = list.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function freshState() {
+    return { round: 0, order: [null, null, null], answers: [{}, {}, {}], done: [null, null, null] };
+  }
+  function validState(st) {
+    try {
+      if (!st || !st.order || st.order.length !== ROUNDS || !st.answers || !st.done) return false;
+      return st.order.every(function (o, r) {
+        return o === null || (o.length === 10 && o.every(function (id) { return ROUND_SETS[r].indexOf(id) !== -1; }));
+      });
+    } catch (e) { return false; }
+  }
+  function load() {
+    try {
+      var raw = window.localStorage.getItem(STORE_KEY);
+      var st = raw ? JSON.parse(raw) : null;
+      if (validState(st)) return st;
+    } catch (e) {}
+    return freshState();
+  }
+  function save() {
+    try { window.localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  state = load();
+
+  // ---------- Current round ----------
+  var deck = [], index = 0;
+  function setDeck() {
+    var ids = state.order[state.round] || ROUND_SETS[state.round];
+    deck = ids.map(function (id) { return byId[id]; });
+  }
+  function answeredIn(r) {
+    var n = 0;
+    ROUND_SETS[r].forEach(function (id) { if (state.answers[r][id]) n++; });
+    return n;
+  }
+  function answers() { return state.answers[state.round]; }
+  function ansAt(i) { return answers()[deck[i].id]; }
+  function countRight() {
+    var n = 0;
+    deck.forEach(function (c) { var a = answers()[c.id]; if (a && a.right) n++; });
+    return n;
+  }
+  function countDone() {
+    var n = 0;
+    deck.forEach(function (c) { if (answers()[c.id]) n++; });
+    return n;
+  }
+  function firstOpen() {
+    for (var i = 0; i < deck.length; i++) if (!ansAt(i)) return i;
+    return -1;
+  }
+  function tagFor(i) {
+    return "Error " + (i + 1) + (deck[i].group === "netting" ? " (netting check)" : "");
+  }
+  setDeck();
+
+  function setInert(el, on) {
+    if (on) { el.setAttribute("inert", ""); el.setAttribute("aria-hidden", "true"); }
+    else { el.removeAttribute("inert"); el.removeAttribute("aria-hidden"); }
+  }
+
+  // ---------- Screens ----------
+  var sections = { intro: intro, bench: bench, game: game, end: end };
+  var headings = { intro: "introHeading", bench: "benchHeading", end: "endHeading" };
+  var returnTo = null;
+  function currentSection() {
+    for (var k in sections) { if (!sections[k].hidden) return k; }
+    return "intro";
+  }
+  function showSection(name) {
+    for (var k in sections) sections[k].hidden = (k !== name);
+    window.scrollTo(0, 0);
+    if (name === "game") {
+      var target = card.classList.contains("flipped") ? $("backHeading") : $("frontTitle");
+      target.focus({ preventScroll: true });
+    } else {
+      $(headings[name]).focus({ preventScroll: true });
+    }
+    refreshLabels();
+  }
+
+  // Round picker: every round can be started, continued, or redone at any time.
+  function roundStatus(r) {
+    if (state.done[r] !== null) return { label: "Redo round " + (r + 1), sub: "Done: " + state.done[r] + " of 10" };
+    var n = answeredIn(r);
+    if (n > 0) return { label: "Continue round " + (r + 1), sub: n + " of 10 answered" };
+    return { label: "Round " + (r + 1), sub: "Not started" };
+  }
+  function renderPickers() {
+    Array.prototype.forEach.call(document.querySelectorAll(".round-picker"), function (box) {
+      box.innerHTML = "";
+      for (var r = 0; r < ROUNDS; r++) {
+        var st = roundStatus(r);
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "round-btn" + (state.done[r] !== null ? " is-done" : "");
+        b.setAttribute("data-round", r);
+        var t = document.createElement("span"); t.className = "round-title"; t.textContent = st.label;
+        var sub = document.createElement("span"); sub.className = "round-sub"; sub.textContent = st.sub;
+        b.appendChild(t); b.appendChild(sub);
+        b.addEventListener("click", function () { startRound(parseInt(this.getAttribute("data-round"), 10)); });
+        box.appendChild(b);
+      }
+    });
+  }
+  function refreshLabels() {
+    var resume = returnTo === "end" ? "Return to my results" : "Return to the review";
+    Array.prototype.forEach.call(document.querySelectorAll(".resume-btn"), function (b) {
+      b.hidden = !returnTo;
+      b.textContent = resume;
+    });
+    renderPickers();
+    var done = state.done.filter(function (d) { return d !== null; }).length;
+    var inProgress = [0, 1, 2].filter(function (r) { return state.done[r] === null && answeredIn(r) > 0; });
+    var note = "";
+    if (inProgress.length) note = "Welcome back. You're partway through round " + (inProgress[0] + 1) + ".";
+    else if (done === ROUNDS) note = "You've finished all three rounds. You can redo any round below.";
+    else if (done > 0) note = "Welcome back. You've finished " + done + (done === 1 ? " round" : " rounds") + " of 3.";
+    $("savedNote").textContent = note;
+    $("savedNote").hidden = !note;
+  }
+
+  // ---------- Benchmark steps ----------
+  var steps = document.querySelectorAll(".bench-step");
+  var benchStep = 0;
+  function showStep(n, moveFocus) {
+    benchStep = n;
+    Array.prototype.forEach.call(steps, function (el, i) { el.hidden = i !== n; });
+    var last = n === steps.length - 1;
+    $("stepNextBtn").hidden = last;
+    $("benchPicker").hidden = !last;
+    $("benchNote").hidden = !last;
+    $("stepCount").textContent = "Step " + (n + 1) + " of " + steps.length;
+    $("benchBackBtn").textContent = n === 0 ? "Back to the intro" : "Back";
+    window.scrollTo(0, 0);
+    if (moveFocus) steps[n].querySelector(".step-h").focus({ preventScroll: true });
+  }
+  showStep(0, false);
+
+  $("startBtn").addEventListener("click", function () {
+    showStep(0, false);
+    showSection("bench");
+  });
+  $("stepNextBtn").addEventListener("click", function () { showStep(benchStep + 1, true); });
+  $("benchBackBtn").addEventListener("click", function () {
+    if (benchStep > 0) { showStep(benchStep - 1, true); return; }
+    showSection("intro");
+  });
+
+  var benchAnswers = [
+    { id: "ni", value: 14000, how: "$280,000 × 5%" },
+    { id: "pre", value: 18250, how: "$365,000 × 5%" },
+    { id: "sales", value: 12250, how: "$2,450,000 × 0.5%" },
+    { id: "assets", value: 18550, how: "$1,855,000 × 1%" }
+  ];
+  $("checkMathBtn").addEventListener("click", function () {
+    benchAnswers.forEach(function (b) {
+      var raw = $("b-" + b.id).value.replace(/[$,\s]/g, "");
+      var mk = $("mk-" + b.id), fb = $("fb-" + b.id);
+      var n = parseFloat(raw);
+      fb.textContent = "";
+      if (raw === "") {
+        mk.className = "mark"; mk.textContent = "";
+        fb.className = "fb blank"; fb.textContent = "Enter an amount.";
+        return;
+      }
+      if (!isNaN(n) && Math.abs(n - b.value) < 0.5) {
+        mk.className = "mark ok"; mk.innerHTML = "\u2713<span class=\"mark-word\"> Correct</span>";
+      } else {
+        mk.className = "mark bad";
+        mk.innerHTML = "\u2717<span class=\"sr-only\"> Incorrect.</span>";
+        fb.className = "fb bad";
+        fb.textContent = "Should be $" + b.value.toLocaleString("en-US") + " (" + b.how + ")";
+      }
+    });
+  });
+
+  // ---------- Cards ----------
+  function updateStatus() {
+    $("counter").textContent = "Round " + (state.round + 1) + " of 3: error " + (index + 1) + " of " + deck.length;
+    var track = $("ticks");
+    track.innerHTML = "";
+    deck.forEach(function (c, i) {
+      var li = document.createElement("li");
+      var a = ansAt(i);
+      if (a && !a.right && i !== index) {
+        li.className = "wrong";
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = "✗";
+        btn.title = "Review error " + (i + 1);
+        btn.setAttribute("aria-label", "Review missed error " + (i + 1) + ": " + c.title);
+        btn.addEventListener("click", function () { index = i; showCard(true); });
+        li.appendChild(btn);
+      } else {
+        if (a) { li.className = a.right ? "right" : "wrong"; li.textContent = a.right ? "✓" : "✗"; }
+        if (i === index) li.className += " current";
+        li.setAttribute("aria-hidden", "true");
+      }
+      track.appendChild(li);
+    });
+    $("scoreLine").textContent = "Score: " + countRight();
+    $("prevFront").hidden = index === 0;
+    $("prevBack").hidden = index === 0;
+  }
+
+  function fillBack(c, a) {
+    $("backTag").textContent = tagFor(index) + ": " + c.title;
+    $("backTwist").innerHTML = "<b>Twist:</b> " + c.twist;
+    var v = $("backVerdict");
+    v.textContent = c.material ? "Material" : "Not material";
+    v.className = "verdict " + (c.material ? "is-material" : "is-not");
+    void v.offsetWidth;
+    v.className += " stamped";
+    var r = $("backResult");
+    r.textContent = (a.right ? "You called it" : "Not quite") +
+      " (you said " + (a.saidMaterial ? "material" : "not material") + ")";
+    r.className = "result " + (a.right ? "right" : "wrong");
+    var fx = $("backFactor");
+    fx.textContent = a.factorRight ? "Factor matched (" + a.factor + ")" : "Different factor (you picked " + a.factor + ")";
+    fx.className = "result " + (a.factorRight ? "right" : "wrong");
+    $("backWhy").textContent = c.why;
+    $("backIdea").innerHTML = "<b>SAB No. 99 takeaway:</b> " + c.idea;
+    var last = index === deck.length - 1;
+    $("nextBtn").textContent = last ? "See my results" : "Next error";
+  }
+
+  function showCard(isReview) {
+    var c = deck[index];
+    var a = ansAt(index);
+    $("frontTag").textContent = tagFor(index);
+    $("frontTitle").textContent = c.title;
+    $("frontAmount").textContent = c.amount;
+    $("frontText").textContent = c.text;
+    updateStatus();
+    if (a) {
+      fillBack(c, a);
+      $("reviewNote").hidden = !isReview;
+      card.classList.add("flipped");
+      setInert(front, true);
+      setInert(back, false);
+      live.textContent = "Reviewing error " + (index + 1) + ": " + c.title +
+        ". Verdict: " + (c.material ? "material." : "not material.");
+      setTimeout(function () { $("backHeading").focus({ preventScroll: true }); }, 50);
+    } else {
+      $("factorSelect").selectedIndex = 0;
+      $("factorMsg").hidden = true;
+      card.classList.remove("flipped");
+      setInert(back, true);
+      setInert(front, false);
+      $("frontTitle").focus({ preventScroll: true });
+    }
+  }
+
+  function answer(call) {
+    if (ansAt(index)) return;
+    var c = deck[index];
+    var pick = $("factorSelect").value;
+    if (!pick) {
+      $("factorMsg").hidden = false;
+      $("factorSelect").focus();
+      return;
+    }
+    $("factorMsg").hidden = true;
+    var saidMaterial = call === "material";
+    var a = { right: saidMaterial === c.material, saidMaterial: saidMaterial,
+              factor: pick, factorRight: c.accept.indexOf(pick) !== -1 };
+    answers()[c.id] = a;
+    save();
+    fillBack(c, a);
+    $("reviewNote").hidden = true;
+    updateStatus();
+    card.classList.add("flipped");
+    setInert(front, true);
+    setInert(back, false);
+    live.textContent = (a.right ? "Correct. " : "Not quite. ") + "Verdict: " +
+      (c.material ? "material. " : "not material. ") + "Twist: " + c.twist;
+    setTimeout(function () { $("backHeading").focus({ preventScroll: true }); }, 50);
+  }
+
+  function goPrev() {
+    if (index === 0) return;
+    index--;
+    showCard(true);
+  }
+
+  // Opens a round. A finished round starts over; an unfinished one picks up at the first open card.
+  function startRound(r) {
+    state.round = r;
+    if (state.done[r] !== null) {
+      state.done[r] = null;
+      state.answers[r] = {};
+      state.order[r] = null;
+    }
+    if (!state.order[r]) state.order[r] = shuffle(ROUND_SETS[r]);
+    save();
+    setDeck();
+    var open = firstOpen();
+    if (open === -1) { showEnd(); return; }
+    index = open;
+    returnTo = null;
+    showSection("game");
+    showCard(false);
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-call]"), function (btn) {
+    btn.addEventListener("click", function () { answer(btn.getAttribute("data-call")); });
+  });
+  $("prevFront").addEventListener("click", goPrev);
+  $("prevBack").addEventListener("click", goPrev);
+  $("nextBtn").addEventListener("click", function () {
+    if (index < deck.length - 1) { index++; showCard(false); return; }
+    if (firstOpen() !== -1) { index = firstOpen(); showCard(false); return; }
+    showEnd();
+  });
+
+  // ---------- End of round ----------
+  var endRound = 0, nextRound = -1;
+  function showEnd() {
+    endRound = state.round;
+    var right = countRight(), total = deck.length;
+    var factorsRight = 0;
+    deck.forEach(function (c) { var a = answers()[c.id]; if (a && a.factorRight) factorsRight++; });
+    state.done[endRound] = right;
+    var pct = Math.round(right / total * 100);
+    var passed = right >= 9;
+    $("endHeading").textContent = "Round " + (endRound + 1) + " of 3 complete";
+    if (passed) {
+      $("finalScore").textContent = "Congratulations! You scored " + right + " of " + total + ".";
+      $("finalMsg").textContent = "That's " + pct + "%, a strong command of SAB No. 99.";
+    } else {
+      $("finalScore").textContent = "Congratulations on finishing! You scored " + right + " of " + total + ".";
+      $("finalMsg").textContent = "That's " + pct + "%. Would you like to go back over the ones you missed? Each one shows why the call went the way it did.";
+    }
+    $("netScore").textContent = "Factors matched: " + factorsRight + " of " + total + ".";
+    $("reviewMissedBtn").hidden = right === total;
+    nextRound = -1;
+    for (var k = 1; k <= ROUNDS; k++) {
+      var cand = (endRound + k) % ROUNDS;
+      if (state.done[cand] === null) { nextRound = cand; break; }
+    }
+    if (nextRound !== -1) {
+      $("nextRoundBtn").textContent = (answeredIn(nextRound) > 0 ? "Continue round " : "Start round ") + (nextRound + 1);
+      $("nextRoundBtn").hidden = false;
+    } else {
+      $("nextRoundBtn").hidden = true;
+    }
+    var list = $("callList");
+    list.innerHTML = "";
+    deck.forEach(function (c) {
+      var a = answers()[c.id];
+      if (!a) return;
+      var li = document.createElement("li");
+      var mark = document.createElement("span");
+      mark.className = a.right ? "mark-right" : "mark-wrong";
+      mark.textContent = a.right ? "Correct: " : "Missed: ";
+      li.appendChild(mark);
+      li.appendChild(document.createTextNode(c.title + " (" + (c.material ? "material" : "not material") + ")"));
+      list.appendChild(li);
+    });
+    save();
+    returnTo = null;
+    showSection("end");
+    if (passed) launchConfetti();
+  }
+
+  $("nextRoundBtn").addEventListener("click", function () { if (nextRound !== -1) startRound(nextRound); });
+  $("reviewMissedBtn").addEventListener("click", function () {
+    state.round = endRound;
+    setDeck();
+    for (var i = 0; i < deck.length; i++) {
+      var a = ansAt(i);
+      if (a && !a.right) { index = i; break; }
+    }
+    returnTo = null;
+    showSection("game");
+    showCard(true);
+  });
+  $("restartBtn").addEventListener("click", function () {
+    state = freshState();
+    endRound = 0;
+    save();
+    setDeck();
+    returnTo = null;
+    showStep(0, false);
+    showSection("intro");
+  });
+
+  // ---------- Refresher links ----------
+  Array.prototype.forEach.call(document.querySelectorAll(".jump-btn"), function (b) {
+    b.addEventListener("click", function () {
+      returnTo = currentSection();
+      showSection(b.getAttribute("data-go"));
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll(".resume-btn"), function (b) {
+    b.addEventListener("click", function () {
+      var target = returnTo;
+      returnTo = null;
+      showSection(target);
+    });
+  });
+
+  // ---------- Celebration for 9 or 10 correct ----------
+  function launchConfetti() {
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var cv = document.createElement("canvas");
+    cv.id = "confetti";
+    cv.setAttribute("aria-hidden", "true");
+    document.body.appendChild(cv);
+    var ctx = cv.getContext("2d");
+    var w = cv.width = window.innerWidth, h = cv.height = window.innerHeight;
+    var colors = ["#2c5159", "#509caa", "#1f6b43", "#e0a526", "#a12b22", "#cfe3df"];
+    var bits = [];
+    for (var n = 0; n < 140; n++) {
+      bits.push({
+        x: w * (0.2 + Math.random() * 0.6), y: h * 0.25 + Math.random() * 40,
+        vx: (Math.random() - 0.5) * 9, vy: -6 - Math.random() * 7,
+        size: 6 + Math.random() * 6, rot: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.3,
+        color: colors[n % colors.length]
+      });
+    }
+    var start = null;
+    function frame(t) {
+      if (!start) start = t;
+      var elapsed = t - start;
+      ctx.clearRect(0, 0, w, h);
+      bits.forEach(function (b) {
+        b.vy += 0.22; b.vx *= 0.99; b.x += b.vx; b.y += b.vy; b.rot += b.vr;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, 1 - elapsed / 3200);
+        ctx.translate(b.x, b.y); ctx.rotate(b.rot);
+        ctx.fillStyle = b.color;
+        ctx.fillRect(-b.size / 2, -b.size / 4, b.size, b.size / 2);
+        ctx.restore();
+      });
+      if (elapsed < 3200) requestAnimationFrame(frame); else cv.remove();
+    }
+    requestAnimationFrame(frame);
+  }
+
+  refreshLabels();
+})();
+</script>
+</body>
+</html>
